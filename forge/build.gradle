@@ -1,5 +1,5 @@
 plugins {
-    id 'net.minecraftforge.gradle' version '[6.0,6.2)'
+    id 'net.minecraftforge.gradle' version '[6.0.24,6.2)'
     id 'org.spongepowered.mixin' version '0.7-SNAPSHOT'
     id 'net.darkhax.curseforgegradle'
     id 'com.modrinth.minotaur'
@@ -14,6 +14,10 @@ base {
 minecraft {
 
     mappings channel: 'official', version: minecraft_version
+
+    copyIdeResources = true
+
+    reobf = false
 
     runs {
         client {
@@ -63,6 +67,9 @@ dependencies {
     compileOnly project(':common')
     
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
+
+    // Forge's hack fix
+    implementation('net.sf.jopt-simple:jopt-simple:5.0.4') { version { strictly '5.0.4' } }
 }
 
 tasks.withType(JavaCompile).configureEach {
@@ -116,8 +123,6 @@ processResources {
         }
     }
 }
-
-jar.finalizedBy('reobfJar')
 
 sourceSets.each {
     def dir = layout.buildDirectory.dir("sourcesSets/$it.name")
@@ -192,7 +197,7 @@ task publishCurseForge(type: net.darkhax.curseforgegradle.TaskPublishCurseForge)
     mainFile.addGameVersion('Client', 'Server')
     mainFile.changelogType = 'markdown'
     mainFile.changelog = project.ext.mod_changelog
-    mainFile.addJavaVersion('Java 17')
+    mainFile.addJavaVersion('Java 21')
     
     // Append Patreon Supporters
     def patreonInfo = project.findProperty('patreon')
