@@ -1,5 +1,5 @@
 plugins {
-    id 'net.neoforged.gradle.userdev' version '7.0.43'
+    id 'net.neoforged.moddev'
     id 'net.darkhax.curseforgegradle'
     id 'com.modrinth.minotaur'
 }
@@ -10,25 +10,29 @@ base {
     archivesName = "${mod_name}-NeoForge-${minecraft_version}"
 }
 
-runs {
-    configureEach {
-        modSource project.sourceSets.main
-    }
-    client {
-        systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
-    }
-    server {
-        systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
-        programArgument '--nogui'
-    }
+neoForge {
+    version = neoforge_version
 
-    gameTestServer {
-        systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+    runs {
+        configureEach {
+            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+            ideName = "NeoForge ${it.name.capitalize()} (${project.path})"
+        }
+        client {
+            client()
+        }
+        server {
+            server()
+        }
+    }
+    mods {
+        "${mod_id}" {
+            sourceSet sourceSets.main
+        }
     }
 }
 
 dependencies {
-    implementation "net.neoforged:neoforge:${neoforge_version}"
     compileOnly project(':common')
 }
 
@@ -84,7 +88,7 @@ processResources {
         filter(org.apache.tools.ant.filters.LineContains, negate: true, contains: ['refmap' ] )
     }
 
-    filesMatching(['META-INF/mods.toml', 'pack.mcmeta', '*.mixins.json']) {
+    filesMatching(['META-INF/neoforge.mods.toml', 'pack.mcmeta', '*.mixins.json']) {
 
         expand buildProps
     }
@@ -130,7 +134,7 @@ task publishCurseForge(type: net.darkhax.curseforgegradle.TaskPublishCurseForge)
     def mainFile = upload(curse_project, jar)
     mainFile.changelogType = 'markdown'
     mainFile.changelog = project.ext.mod_changelog
-    mainFile.addJavaVersion('Java 17')
+    mainFile.addJavaVersion('Java 21')
     mainFile.releaseType = 'release'
     mainFile.addGameVersion('Server', 'Client')
 
