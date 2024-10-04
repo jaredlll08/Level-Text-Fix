@@ -1,15 +1,12 @@
 {
   "required": true,
   "minVersion": "0.8",
-  "package": "net.darkhax.leveltextfix.mixin",
+  "package": "net.darkhax.leveltextfix.neoforge.mixin",
   "compatibilityLevel": "JAVA_21",
-  "mixins": [
-  ],
-  "client": [
-    "MixinComponent"
-  ],
+  "mixins": [],
+  "client": [],
+  "server": [],
   "injectors": {
     "defaultRequire": 1
   }
 }
-  
